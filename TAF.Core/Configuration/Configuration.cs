@@ -22,9 +22,10 @@ public static class Configuration
         Env.Load();
 
         var environment = Environment.GetEnvironmentVariable("TAF_ENV") ?? "dev";
+        var configBasePath = ResolveConfigurationBasePath();
 
         var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(configBasePath)
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .AddEnvironmentVariables()
@@ -58,5 +59,36 @@ public static class Configuration
         // -------- Validation --------
         Validations.ValidateTimeouts(Timeouts);
         Validations.ValidateCredentials(Credentials);
+    }
+
+    private static string ResolveConfigurationBasePath()
+    {
+        var currentDir = Directory.GetCurrentDirectory();
+        var fromCurrent = FindDirectoryContainingAppSettings(currentDir);
+        if (fromCurrent != null)
+            return fromCurrent;
+
+        var baseDir = AppContext.BaseDirectory;
+        var fromBaseDir = FindDirectoryContainingAppSettings(baseDir);
+        if (fromBaseDir != null)
+            return fromBaseDir;
+
+        throw new FileNotFoundException(
+            $"Could not find appsettings.json starting from '{currentDir}' or '{baseDir}'.");
+    }
+
+    private static string? FindDirectoryContainingAppSettings(string startDirectory)
+    {
+        var directory = new DirectoryInfo(startDirectory);
+        while (directory != null)
+        {
+            var candidate = Path.Combine(directory.FullName, "appsettings.json");
+            if (File.Exists(candidate))
+                return directory.FullName;
+
+            directory = directory.Parent;
+        }
+
+        return null;
     }
 }

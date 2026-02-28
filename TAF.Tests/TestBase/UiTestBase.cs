@@ -66,7 +66,14 @@ public abstract class UiTestBase
         Directory.CreateDirectory(screenshotsDir);
 
         var screenshotPath = Path.Combine(screenshotsDir, $"{safeTestName}_{timestamp}.png");
-        screenshotDriver.GetScreenshot().SaveAsFile(screenshotPath);
-        TestContext.AddTestAttachment(screenshotPath, "Failure screenshot");
+        try
+        {
+            screenshotDriver.GetScreenshot().SaveAsFile(screenshotPath);
+            TestContext.AddTestAttachment(screenshotPath, "Failure screenshot");
+        }
+        catch (WebDriverException)
+        {
+            // Ignore screenshot failures when browser session is already closed/crashed.
+        }
     }
 }

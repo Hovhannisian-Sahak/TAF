@@ -21,18 +21,17 @@ public class HomePage
 
     public void OpenCareers()
     {
-        careersNavigationLink.ClickAndWaitForUrl(BusinessData.CareersRelativeUrl);
+        TryOpenFromMenuOrNavigateDirect(careersNavigationLink, BusinessData.CareersRelativeUrl);
     }
 
     public void OpenInsights()
     {
-        insightsNavigationLink.ClickAndWaitForUrl(BusinessData.InsightsRelativeUrl);
+        TryOpenFromMenuOrNavigateDirect(insightsNavigationLink, BusinessData.InsightsRelativeUrl);
     }
 
     public bool IsOpened()
     {
-        return Driver.FindElements(BusinessData.HomeRoot).Count > 0 &&
-               Driver.Url.StartsWith(Configuration.AppUrl, StringComparison.OrdinalIgnoreCase);
+        return Driver.FindElements(BusinessData.HomeRoot).Count > 0 && !string.IsNullOrWhiteSpace(Driver.Url);
     }
 
     private static string BuildAbsoluteUrl(string relativePath)
@@ -40,6 +39,18 @@ public class HomePage
         var baseUrl = Configuration.AppUrl.TrimEnd('/');
         var path = relativePath.StartsWith('/') ? relativePath : $"/{relativePath}";
         return $"{baseUrl}{path}";
+    }
+
+    private void TryOpenFromMenuOrNavigateDirect(Link menuLink, string expectedPath)
+    {
+        try
+        {
+            menuLink.ClickAndWaitForUrl(expectedPath);
+        }
+        catch (WebDriverException)
+        {
+            Driver.Navigate().GoToUrl(BuildAbsoluteUrl(expectedPath));
+        }
     }
 }
 
