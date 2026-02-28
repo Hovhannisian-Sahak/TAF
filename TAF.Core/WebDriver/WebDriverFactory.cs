@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Edge;
+using TAF.Core.Configuration;
 
 namespace TAF.Core.WebDriver
 {

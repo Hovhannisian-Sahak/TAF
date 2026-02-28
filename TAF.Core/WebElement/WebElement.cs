@@ -1,7 +1,8 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using System;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using TAF.Core.WebDriver;
+
 
 namespace TAF.Core.WebElement
 {
@@ -9,11 +10,11 @@ namespace TAF.Core.WebElement
     {
         protected IWebDriver Driver => WebDriverWrapper.Driver;
 
-        private DefaultWait<IWebDriver> CreateWait(int timeoutSeconds = Timeouts.Default)
+        private DefaultWait<IWebDriver> CreateWait(int? timeoutSeconds = null)
         {
             var wait = new DefaultWait<IWebDriver>(Driver)
             {
-                Timeout = TimeSpan.FromSeconds(timeoutSeconds),
+                Timeout = TimeSpan.FromSeconds(timeoutSeconds ?? Configuration.Configuration.Timeouts.Default),
                 PollingInterval = TimeSpan.FromMilliseconds(500)
             };
 
@@ -28,13 +29,13 @@ namespace TAF.Core.WebElement
         // CORE ELEMENT ACCESS
         // =========================
 
-        protected IWebElement Element(By locator, int timeoutSeconds = Timeouts.Default)
+        protected IWebElement Element(By locator, int? timeoutSeconds = null)
         {
             return CreateWait(timeoutSeconds)
                 .Until(driver => driver.FindElement(locator));
         }
 
-        protected void WaitUntilClickable(By locator, int timeoutSeconds = Timeouts.Default)
+        protected void WaitUntilClickable(By locator, int? timeoutSeconds = null)
         {
             CreateWait(timeoutSeconds)
                 .Until(driver =>
@@ -51,7 +52,7 @@ namespace TAF.Core.WebElement
         protected void WaitUntilTextContains(
             By locator,
             string text,
-            int timeoutSeconds = Timeouts.Default)
+            int? timeoutSeconds = null)
         {
             CreateWait(timeoutSeconds)
                 .Until(driver =>
@@ -62,7 +63,7 @@ namespace TAF.Core.WebElement
             By locator,
             string attribute,
             string value,
-            int timeoutSeconds = Timeouts.Default)
+            int? timeoutSeconds = null)
         {
             CreateWait(timeoutSeconds)
                 .Until(driver =>
@@ -73,7 +74,7 @@ namespace TAF.Core.WebElement
 
         protected void WaitUntilUrlContains(
             string partialUrl,
-            int timeoutSeconds = Timeouts.Default)
+            int? timeoutSeconds = null)
         {
             CreateWait(timeoutSeconds)
                 .Until(driver =>
@@ -84,16 +85,18 @@ namespace TAF.Core.WebElement
         // RETRY LOGIC (Improved)
         // =========================
 
-        protected void Retry(Action action, int retries = Timeouts.Retry)
+        protected void Retry(Action action, int? retries = null)
         {
-            for (int i = 0; i < retries; i++)
+            var maxRetries = retries ?? Configuration.Configuration.Timeouts.Retry;
+
+            for (int i = 0; i < maxRetries; i++)
             {
                 try
                 {
                     action();
                     return;
                 }
-                catch (Exception) when (i < retries - 1)
+                catch (Exception) when (i < maxRetries - 1)
                 {
                     //swallow exception and retry
                 }
