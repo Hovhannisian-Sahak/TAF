@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TAF.Core.WebElementFamily
 {
@@ -13,6 +13,7 @@ namespace TAF.Core.WebElementFamily
 
         public void Click()
         {
+            Log.Info($"Click button: {_locator}");
             Retry(() =>
             {
                 WaitUntilClickable(_locator);
@@ -22,6 +23,7 @@ namespace TAF.Core.WebElementFamily
 
         public void ClickAndWaitForUrl(string urlPart)
         {
+            Log.Info($"Click button and wait for URL containing '{urlPart}': {_locator}");
             Click();
             WaitUntilUrlContains(urlPart);
         }

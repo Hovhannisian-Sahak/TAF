@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TAF.Core.WebElementFamily
 {
@@ -16,6 +16,7 @@ namespace TAF.Core.WebElementFamily
 
         public void WaitUntilText(string expectedText)
         {
+            Log.Info($"Wait until label text contains '{expectedText}': {_locator}");
             WaitUntilTextContains(_locator, expectedText);
         }
     }

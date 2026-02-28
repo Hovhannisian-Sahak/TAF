@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TAF.Core.WebElementFamily
 {
@@ -15,6 +15,7 @@ namespace TAF.Core.WebElementFamily
 
         public void Check()
         {
+            Log.Info($"Check checkbox: {_locator}");
             Retry(() =>
             {
                 if (!IsChecked)
@@ -24,6 +25,7 @@ namespace TAF.Core.WebElementFamily
 
         public void Uncheck()
         {
+            Log.Info($"Uncheck checkbox: {_locator}");
             Retry(() =>
             {
                 if (IsChecked)

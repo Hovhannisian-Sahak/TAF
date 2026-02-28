@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
 namespace TAF.Core.WebElementFamily
 {
@@ -13,6 +13,7 @@ namespace TAF.Core.WebElementFamily
 
         public void EnterText(string text)
         {
+            Log.Info($"Enter text into textbox: {_locator}");
             Retry(() =>
             {
                 var element = Element(_locator);
@@ -23,6 +24,7 @@ namespace TAF.Core.WebElementFamily
 
         public void EnterTextAndWait(string value)
         {
+            Log.Info($"Enter text and wait for value '{value}' in textbox: {_locator}");
             EnterText(value);
             WaitUntilAttributeContains(_locator, "value", value);
         }

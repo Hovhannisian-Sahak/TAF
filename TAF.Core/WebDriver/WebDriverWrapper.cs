@@ -1,40 +1,51 @@
-﻿using OpenQA.Selenium;
 using System;
+using log4net;
+using OpenQA.Selenium;
 
 namespace TAF.Core.WebDriver
 {
     public static class WebDriverWrapper
     {
-        private static readonly ThreadLocal<IWebDriver> _driver =
-            new ThreadLocal<IWebDriver>();
+        private static readonly ILog Log = LogManager.GetLogger(typeof(WebDriverWrapper));
+
+        private static readonly ThreadLocal<IWebDriver?> DriverThread =
+            new ThreadLocal<IWebDriver?>();
 
         public static IWebDriver Driver
         {
             get
             {
-                if (!_driver.IsValueCreated || _driver.Value == null)
+                if (!DriverThread.IsValueCreated || DriverThread.Value == null)
                     throw new InvalidOperationException("WebDriver not initialized for this thread.");
 
-                return _driver.Value;
+                return DriverThread.Value;
             }
         }
 
         public static void Init(IWebDriver driver)
         {
-            if (_driver.IsValueCreated && _driver.Value != null)
+            if (DriverThread.IsValueCreated && DriverThread.Value != null)
+            {
+                Log.Debug("WebDriver is already initialized for current thread. Init skipped.");
                 return;
+            }
 
-            _driver.Value = driver;
+            DriverThread.Value = driver;
+            Log.Info("WebDriver initialized for current thread.");
         }
 
         public static void Quit()
         {
-            if (_driver.IsValueCreated && _driver.Value != null)
+            if (!DriverThread.IsValueCreated || DriverThread.Value == null)
             {
-                _driver.Value.Quit();
-                _driver.Value.Dispose();
-                _driver.Value = null;
+                Log.Debug("WebDriver is not initialized for current thread. Quit skipped.");
+                return;
             }
+
+            Log.Info("Quit WebDriver for current thread.");
+            DriverThread.Value.Quit();
+            DriverThread.Value.Dispose();
+            DriverThread.Value = null;
         }
     }
 }

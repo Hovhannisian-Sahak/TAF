@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 namespace TAF.Core.WebElementFamily
@@ -17,16 +17,19 @@ namespace TAF.Core.WebElementFamily
 
         public void SelectByText(string text)
         {
+            Log.Info($"Select dropdown option by text '{text}': {_locator}");
             Retry(() => Select.SelectByText(text));
         }
 
         public void SelectByValue(string value)
         {
+            Log.Info($"Select dropdown option by value '{value}': {_locator}");
             Retry(() => Select.SelectByValue(value));
         }
 
         public void SelectByIndex(int index)
         {
+            Log.Info($"Select dropdown option by index '{index}': {_locator}");
             Retry(() => Select.SelectByIndex(index));
         }
 
@@ -35,6 +38,7 @@ namespace TAF.Core.WebElementFamily
 
         public void WaitUntilSelected(string expectedText)
         {
+            Log.Info($"Wait until dropdown selected option contains '{expectedText}': {_locator}");
             WaitUntilTextContains(_locator, expectedText);
         }
     }

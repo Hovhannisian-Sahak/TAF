@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using DotNetEnv;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 using TAF.Core.WebDriver;
 using TAF.Core.Timeouts;
 using TimeoutSettings = TAF.Core.Timeouts.Timeouts;
@@ -16,6 +17,7 @@ public static class Configuration
     public static TimeoutSettings Timeouts { get; private set; } = new();
     public static Credentials Credentials { get; private set; } = new();
     public static BrowserOptions BrowserOptions { get; private set; } = new();
+    public static LoggingOptions Logging { get; private set; } = new();
 
     private static void Init()
     {
@@ -45,6 +47,9 @@ public static class Configuration
         // -------- Strongly Typed Sections --------
         config.GetSection("Timeouts").Bind(Timeouts);
         config.GetSection("BrowserOptions").Bind(BrowserOptions);
+        config.GetSection("Logging").Bind(Logging);
+
+        LoggerConfigurator.Configure(Logging);
 
         // -------- Credentials from .env or JSON fallback --------
         Credentials.Username = Environment.GetEnvironmentVariable("TAF_USERNAME") 

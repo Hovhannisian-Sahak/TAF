@@ -1,4 +1,5 @@
 using System;
+using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TAF.Core.WebDriver;
@@ -8,6 +9,7 @@ namespace TAF.Core.WebElement
 {
     public abstract class BaseElement
     {
+        protected static readonly ILog Log = LogManager.GetLogger(typeof(BaseElement));
         protected IWebDriver Driver => WebDriverWrapper.Driver;
 
         private DefaultWait<IWebDriver> CreateWait(int? timeoutSeconds = null)
@@ -31,12 +33,14 @@ namespace TAF.Core.WebElement
 
         protected IWebElement Element(By locator, int? timeoutSeconds = null)
         {
+            Log.Debug($"Find element: {locator}");
             return CreateWait(timeoutSeconds)
                 .Until(driver => driver.FindElement(locator));
         }
 
         protected void WaitUntilClickable(By locator, int? timeoutSeconds = null)
         {
+            Log.Debug($"Wait until clickable: {locator}");
             CreateWait(timeoutSeconds)
                 .Until(driver =>
                 {
@@ -54,6 +58,7 @@ namespace TAF.Core.WebElement
             string text,
             int? timeoutSeconds = null)
         {
+            Log.Debug($"Wait until element text contains '{text}': {locator}");
             CreateWait(timeoutSeconds)
                 .Until(driver =>
                     driver.FindElement(locator).Text.Contains(text));
@@ -65,6 +70,7 @@ namespace TAF.Core.WebElement
             string value,
             int? timeoutSeconds = null)
         {
+            Log.Debug($"Wait until attribute '{attribute}' contains '{value}': {locator}");
             CreateWait(timeoutSeconds)
                 .Until(driver =>
                     driver.FindElement(locator)
@@ -76,6 +82,7 @@ namespace TAF.Core.WebElement
             string partialUrl,
             int? timeoutSeconds = null)
         {
+            Log.Debug($"Wait until URL contains '{partialUrl}'");
             CreateWait(timeoutSeconds)
                 .Until(driver =>
                     driver.Url.Contains(partialUrl));
@@ -98,7 +105,7 @@ namespace TAF.Core.WebElement
                 }
                 catch (Exception) when (i < maxRetries - 1)
                 {
-                    //swallow exception and retry
+                    Log.Warn($"Action failed on retry {i + 1} of {maxRetries}. Retrying.");
                 }
             }
         }
