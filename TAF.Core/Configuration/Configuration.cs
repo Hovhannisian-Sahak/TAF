@@ -18,11 +18,9 @@ public static class Configuration
 
     private static void Init()
     {
-        // Load .env file first
-        Env.Load();
-
-        var environment = Environment.GetEnvironmentVariable("TAF_ENV") ?? "dev";
         var configBasePath = ResolveConfigurationBasePath();
+        LoadEnvironmentVariables(configBasePath);
+        var environment = Environment.GetEnvironmentVariable("TAF_ENV") ?? "dev";
 
         var config = new ConfigurationBuilder()
             .SetBasePath(configBasePath)
@@ -90,5 +88,14 @@ public static class Configuration
         }
 
         return null;
+    }
+
+    private static void LoadEnvironmentVariables(string configBasePath)
+    {
+        var envPath = Path.Combine(configBasePath, ".env");
+        if (!File.Exists(envPath))
+            return;
+
+        Env.Load(envPath);
     }
 }
