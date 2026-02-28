@@ -15,14 +15,20 @@ namespace TAF.Core.WebElementFamily
 
         public void Check()
         {
-            if (!IsChecked)
-                Element(_locator).Click();
+            Retry(() =>
+            {
+                if (!IsChecked)
+                    Element(_locator).Click();
+            });
         }
 
         public void Uncheck()
         {
-            if (IsChecked)
-                Element(_locator).Click();
+            Retry(() =>
+            {
+                if (IsChecked)
+                    Element(_locator).Click();
+            });
         }
     }
 }

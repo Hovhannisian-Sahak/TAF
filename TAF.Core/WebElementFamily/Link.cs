@@ -11,11 +11,25 @@ namespace TAF.Core.WebElementFamily
             _locator = locator;
         }
 
-        public string Href => Element(_locator).GetAttribute("href");
+        public string Text =>
+            Element(_locator).Text;
+
+        public string Href =>
+            Element(_locator).GetAttribute("href");
 
         public void Click()
         {
-            Element(_locator).Click();
+            Retry(() =>
+            {
+                WaitUntilClickable(_locator);
+                Element(_locator).Click();
+            });
+        }
+
+        public void ClickAndWaitForUrl(string urlPart)
+        {
+            Click();
+            WaitUntilUrlContains(urlPart);
         }
     }
 }

@@ -17,15 +17,25 @@ namespace TAF.Core.WebElementFamily
 
         public void SelectByText(string text)
         {
-            Select.SelectByText(text);
+            Retry(() => Select.SelectByText(text));
         }
 
         public void SelectByValue(string value)
         {
-            Select.SelectByValue(value);
+            Retry(() => Select.SelectByValue(value));
+        }
+
+        public void SelectByIndex(int index)
+        {
+            Retry(() => Select.SelectByIndex(index));
         }
 
         public string SelectedOption =>
             Select.SelectedOption.Text;
+
+        public void WaitUntilSelected(string expectedText)
+        {
+            WaitUntilTextContains(_locator, expectedText);
+        }
     }
 }

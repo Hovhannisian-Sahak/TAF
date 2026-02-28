@@ -11,6 +11,12 @@ namespace TAF.Core.WebElementFamily
             _locator = locator;
         }
 
-        public string Text => Element(_locator).Text;
+        public string Text =>
+            Element(_locator).Text;
+
+        public void WaitUntilText(string expectedText)
+        {
+            WaitUntilTextContains(_locator, expectedText);
+        }
     }
 }

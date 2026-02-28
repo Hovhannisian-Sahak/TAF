@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+
 namespace TAF.Core.WebElementFamily
 {
     public class Button : WebElement.BaseElement
@@ -12,7 +13,17 @@ namespace TAF.Core.WebElementFamily
 
         public void Click()
         {
-            Element(_locator).Click();
+            Retry(() =>
+            {
+                WaitUntilClickable(_locator);
+                Element(_locator).Click();
+            });
+        }
+
+        public void ClickAndWaitForUrl(string urlPart)
+        {
+            Click();
+            WaitUntilUrlContains(urlPart);
         }
     }
 }

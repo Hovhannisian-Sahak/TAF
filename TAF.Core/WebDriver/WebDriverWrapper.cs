@@ -1,34 +1,40 @@
 ﻿using OpenQA.Selenium;
+using System;
 
 namespace TAF.Core.WebDriver
 {
     public static class WebDriverWrapper
     {
-        private static IWebDriver _driver;
+        private static readonly ThreadLocal<IWebDriver> _driver =
+            new ThreadLocal<IWebDriver>();
 
         public static IWebDriver Driver
         {
             get
             {
-                if (_driver == null)
-                    throw new InvalidOperationException("WebDriver is not initialized.");
+                if (!_driver.IsValueCreated || _driver.Value == null)
+                    throw new InvalidOperationException("WebDriver not initialized for this thread.");
 
-                return _driver;
+                return _driver.Value;
             }
         }
 
-        public static void Init(BrowserType browser)
+        public static void Init(IWebDriver driver)
         {
-            if (_driver != null)
+            if (_driver.IsValueCreated && _driver.Value != null)
                 return;
 
-            _driver = WebDriverFactory.Create(browser);
+            _driver.Value = driver;
         }
 
         public static void Quit()
         {
-            _driver?.Quit();
-            _driver = null;
+            if (_driver.IsValueCreated && _driver.Value != null)
+            {
+                _driver.Value.Quit();
+                _driver.Value.Dispose();
+                _driver.Value = null;
+            }
         }
     }
 }

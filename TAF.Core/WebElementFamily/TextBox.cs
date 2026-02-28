@@ -13,11 +13,18 @@ namespace TAF.Core.WebElementFamily
 
         public void EnterText(string text)
         {
-            var element = Element(_locator);
-            element.Clear();
-            element.SendKeys(text);
+            Retry(() =>
+            {
+                var element = Element(_locator);
+                element.Clear();
+                element.SendKeys(text);
+            });
         }
 
-        public string Value => Element(_locator).GetAttribute("value");
+        public void EnterTextAndWait(string value)
+        {
+            EnterText(value);
+            WaitUntilAttributeContains(_locator, "value", value);
+        }
     }
 }
