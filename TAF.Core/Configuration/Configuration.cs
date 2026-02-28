@@ -1,11 +1,8 @@
-using System;
-using Microsoft.Extensions.Configuration;
 using DotNetEnv;
-using TAF.Core.Configuration;
+using Microsoft.Extensions.Configuration;
 using TAF.Core.Logging;
-using TAF.Core.WebDriver;
-using TAF.Core.Timeouts;
 using TimeoutSettings = TAF.Core.Timeouts.Timeouts;
+
 namespace TAF.Core.Configuration;
 
 public static class Configuration
@@ -22,7 +19,7 @@ public static class Configuration
     private static void Init()
     {
         // Load .env file first
-        Env.Load();  // looks for .env in project root by default
+        Env.Load();
 
         var environment = Environment.GetEnvironmentVariable("TAF_ENV") ?? "dev";
 
@@ -40,8 +37,8 @@ public static class Configuration
         BrowserType = browser;
 
         // -------- App URL --------
-        AppUrl = Environment.GetEnvironmentVariable("APP_URL") 
-                 ?? config["ApplicationUrl"] 
+        AppUrl = Environment.GetEnvironmentVariable("APP_URL")
+                 ?? config["ApplicationUrl"]
                  ?? throw new InvalidOperationException("ApplicationUrl is missing.");
 
         // -------- Strongly Typed Sections --------
@@ -51,17 +48,15 @@ public static class Configuration
 
         LoggerConfigurator.Configure(Logging);
 
-        // -------- Credentials from .env or JSON fallback --------
-        Credentials.Username = Environment.GetEnvironmentVariable("TAF_USERNAME") 
-                               ?? config["Credentials:Username"] 
-                               ?? throw new InvalidOperationException("Username is missing.");
+        // -------- Credentials from .env only --------
+        Credentials.Username = Environment.GetEnvironmentVariable("TAF_USERNAME")
+                               ?? throw new InvalidOperationException("username is missing");
 
-        Credentials.Password = Environment.GetEnvironmentVariable("TAF_PASSWORD") 
-                               ?? config["Credentials:Password"] 
-                               ?? throw new InvalidOperationException("Password is missing.");
+        Credentials.Password = Environment.GetEnvironmentVariable("TAF_PASSWORD")
+                               ?? throw new InvalidOperationException("password is missing");
 
         // -------- Validation --------
-        // Validations.ValidateTimeouts(Timeouts);
-        // Validations.ValidateCredentials(Credentials);
+        Validations.ValidateTimeouts(Timeouts);
+        Validations.ValidateCredentials(Credentials);
     }
 }
