@@ -1,18 +1,15 @@
 using OpenQA.Selenium;
 using TAF.Business.Data;
 using BusinessData = TAF.Business.Data.Data;
-using TAF.Core.Configuration;
-using TAF.Core.WebDriver;
 
 namespace TAF.Business.ApplicationInterface;
 
-public class InsightsPage
+public class InsightsPage : BasePage
 {
-    private IWebDriver Driver => WebDriverWrapper.Driver;
-
     public void Open()
     {
-        Driver.Navigate().GoToUrl(BuildAbsoluteUrl(BusinessData.InsightsRelativeUrl));
+        NavigateTo(BusinessData.InsightsRelativeUrl);
+        AcceptCookiesIfVisible();
     }
 
     public bool IsOpened()
@@ -22,12 +19,6 @@ public class InsightsPage
                 Driver.Title.Contains(BusinessData.InsightsTitleKeyword, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static string BuildAbsoluteUrl(string relativePath)
-    {
-        var baseUrl = Configuration.AppUrl.TrimEnd('/');
-        var path = relativePath.StartsWith('/') ? relativePath : $"/{relativePath}";
-        return $"{baseUrl}{path}";
-    }
 }
 
 
