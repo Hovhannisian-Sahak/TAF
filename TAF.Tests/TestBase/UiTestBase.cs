@@ -1,20 +1,21 @@
 using System.Text.RegularExpressions;
-using log4net;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 using TAF.Core.WebDriver;
 
 namespace TAF.Tests.TestBase;
 
 public abstract class UiTestBase
 {
-    private static readonly ILog Log = LogManager.GetLogger(typeof(UiTestBase));
+    private static readonly log4net.ILog Log = AppLogger.For<UiTestBase>();
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
+        _ = Configuration.BrowserType; // force configuration + logging setup
         EnsureLogDirectory();
         Log.Info($"Starting test fixture: {TestContext.CurrentContext.Test.Name}");
     }
@@ -104,7 +105,11 @@ public abstract class UiTestBase
 
     private static void EnsureLogDirectory()
     {
-        var logsDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "artifacts", "logs");
-        Directory.CreateDirectory(logsDir);
+        var logPath = Configuration.Logging.FilePath;
+        var directory = Path.GetDirectoryName(logPath);
+        if (!string.IsNullOrWhiteSpace(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
     }
 }

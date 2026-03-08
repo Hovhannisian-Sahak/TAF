@@ -1,12 +1,12 @@
 using System;
-using log4net;
 using OpenQA.Selenium;
+using TAF.Core.Logging;
 
 namespace TAF.Core.WebDriver
 {
     public static class WebDriverWrapper
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(WebDriverWrapper));
+        private static readonly log4net.ILog Log = AppLogger.For(typeof(WebDriverWrapper));
 
         private static readonly ThreadLocal<IWebDriver?> DriverThread =
             new ThreadLocal<IWebDriver?>();

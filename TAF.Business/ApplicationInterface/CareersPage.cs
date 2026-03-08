@@ -2,20 +2,25 @@ using OpenQA.Selenium;
 using System.Linq;
 using BusinessData = TAF.Business.Data.Data;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 using TAF.Core.WebElementFamily;
 
 namespace TAF.Business.ApplicationInterface;
 
 public class CareersPage : BasePage
 {
+    private static readonly log4net.ILog Log = AppLogger.For<CareersPage>();
+
     public void Open()
     {
+        Log.Info("Open Careers page.");
         NavigateTo(BusinessData.CareersRelativeUrl);
         AcceptCookiesIfVisible();
     }
 
     public bool IsOpened()
     {
+        Log.Info("Check Careers page opened.");
         return Driver.Url.Contains(BusinessData.CareersRelativeUrl, StringComparison.OrdinalIgnoreCase) &&
                (Driver.FindElements(BusinessData.CareersHeader).Count > 0 ||
                 Driver.Title.Contains(BusinessData.CareersTitleKeyword, StringComparison.OrdinalIgnoreCase));
@@ -23,6 +28,7 @@ public class CareersPage : BasePage
 
     public void Search(string keyword, string location)
     {
+        Log.Info($"Search careers. Keyword: '{keyword}', Location: '{location}'.");
         ClickStartSearch();
         EnterRole(keyword);
         EnterCountryName(location);
@@ -38,6 +44,7 @@ public class CareersPage : BasePage
 
     public void OpenLatestAndViewApply()
     {
+        Log.Info("Open latest result and click apply.");
         AcceptCookiesIfVisible();
         WaitForSearchResults();
 
@@ -74,6 +81,7 @@ public class CareersPage : BasePage
 
     public bool IsKeywordPresentOnPage(string keyword)
     {
+        Log.Info($"Check keyword present on page: '{keyword}'.");
         var wait = CreateWait(Configuration.Timeouts.Long);
         return wait.Until(driver =>
             driver.PageSource.Contains(keyword, StringComparison.OrdinalIgnoreCase));
@@ -81,6 +89,7 @@ public class CareersPage : BasePage
     
     public bool IsCountryNamePresentOnPage(string location)
     {
+        Log.Info($"Check location present on page: '{location}'.");
         var wait = CreateWait(Configuration.Timeouts.Long);
         return wait.Until(driver =>
             driver.PageSource.Contains(location, StringComparison.OrdinalIgnoreCase));

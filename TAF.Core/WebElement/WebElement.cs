@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using TAF.Core.Logging;
 using TAF.Core.WebDriver;
 
 
@@ -11,7 +11,7 @@ namespace TAF.Core.WebElement
 {
     public abstract class BaseElement
     {
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(BaseElement));
+        protected static readonly log4net.ILog Log = AppLogger.For<BaseElement>();
         protected IWebDriver Driver => WebDriverWrapper.Driver;
 
         private DefaultWait<IWebDriver> CreateWait(int? timeoutSeconds = null)

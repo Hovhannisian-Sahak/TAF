@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using TAF.Business.Business;
+using TAF.Core.Logging;
 using TAF.Tests.TestBase;
 
 namespace TAF.Tests.Tests;
@@ -7,9 +8,12 @@ namespace TAF.Tests.Tests;
 [TestFixture]
 public class NavigationTests : UiTestBase
 {
+    private static readonly log4net.ILog Log = AppLogger.For<NavigationTests>();
+
     [Test]
     public void HomePage_Should_Open()
     {
+        Log.Info("Test start: open Home page.");
         new HomeContext()
             .OpenHome()
             .ValidateOpened();
@@ -18,6 +22,7 @@ public class NavigationTests : UiTestBase
     [Test]
     public void CareersPage_Should_Open_From_Home()
     {
+        Log.Info("Test start: open Careers from Home.");
         new HomeContext()
             .OpenHome()
             .OpenCareers()
@@ -27,6 +32,7 @@ public class NavigationTests : UiTestBase
     [Test]
     public void InsightsPage_Should_Open_From_Home()
     {
+        Log.Info("Test start: open Insights from Home.");
         new HomeContext()
             .OpenHome()
             .OpenInsights()
@@ -36,6 +42,7 @@ public class NavigationTests : UiTestBase
     [Test]
     public void QuarterlyResultsPage_Should_Open_From_Home()
     {
+        Log.Info("Test start: open Quarterly Earnings from Home.");
         new HomeContext()
             .OpenHome()
             .OpenQuarterlyEarnings()

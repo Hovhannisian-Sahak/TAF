@@ -2,16 +2,19 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using BusinessData = TAF.Business.Data.Data;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 using TAF.Core.WebDriver;
 
 namespace TAF.Business.ApplicationInterface;
 
 public abstract class BasePage
 {
+    protected static readonly log4net.ILog Log = AppLogger.For<BasePage>();
     protected IWebDriver Driver => WebDriverWrapper.Driver;
 
     protected void NavigateTo(string relativePath)
     {
+        Log.Info($"Navigate to '{relativePath}'.");
         Driver.Navigate().GoToUrl(BuildAbsoluteUrl(relativePath));
     }
 
@@ -47,6 +50,7 @@ public abstract class BasePage
 
         try
         {
+            Log.Info("Accept cookies banner.");
             cookieButtons[0].Click();
         }
         catch (WebDriverException)

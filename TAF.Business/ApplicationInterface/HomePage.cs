@@ -2,6 +2,7 @@ using OpenQA.Selenium;
 using System.Linq;
 using TAF.Business.Data;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 using BusinessData = TAF.Business.Data.Data;
 using TAF.Core.WebElementFamily;
 
@@ -9,29 +10,34 @@ namespace TAF.Business.ApplicationInterface;
 
 public class HomePage : BasePage
 {
+    private static readonly log4net.ILog Log = AppLogger.For<HomePage>();
     private readonly Link careersNavigationLink = new(BusinessData.CareersNavigationLink);
     private readonly Link insightsNavigationLink = new(BusinessData.InsightsNavigationLink);
     private readonly Link quarterlyEarningsNavigationLink = new(BusinessData.QuarterlyEarningsNavigationLink);
     public void Open()
     {
+        Log.Info("Open Home page.");
         NavigateTo(BusinessData.HomeRelativeUrl);
         AcceptCookiesIfVisible();
     }
 
     public void OpenCareers()
     {
+        Log.Info("Open Careers from Home.");
         AcceptCookiesIfVisible();
         TryOpenFromMenuOrNavigateDirect(careersNavigationLink, BusinessData.CareersRelativeUrl);
     }
 
     public void OpenInsights()
     {
+        Log.Info("Open Insights from Home.");
         AcceptCookiesIfVisible();
         TryOpenFromMenuOrNavigateDirect(insightsNavigationLink, BusinessData.InsightsRelativeUrl);
     }
     
     public void OpenQuarterlyEarnings()
     {
+        Log.Info("Open Quarterly Earnings from Home.");
         AcceptCookiesIfVisible();
         MoveToAboutLink();
         TryOpenFromMenuOrNavigateDirect(quarterlyEarningsNavigationLink,BusinessData.QuarterlyEarningsRelativeUrl);
@@ -39,6 +45,7 @@ public class HomePage : BasePage
 
     public bool IsOpened()
     {
+        Log.Info("Check Home page opened.");
         return Driver.FindElements(BusinessData.HomeRoot).Count > 0 && !string.IsNullOrWhiteSpace(Driver.Url);
     }
     
@@ -56,6 +63,7 @@ public class HomePage : BasePage
     
     public void Search(string searchTerm)
     {
+        Log.Info($"Global search: '{searchTerm}'.");
         ClickSearchIcon();
         EnterSearchTerm(searchTerm);
         ClickSearchButton();
@@ -82,6 +90,7 @@ public class HomePage : BasePage
     
     public void ValidateSearchResultsContain(string expectedText)
     {
+        Log.Info($"Validate search results contain: '{expectedText}'.");
         var wait = CreateWait(Configuration.Timeouts.Long);
         wait.Until(driver =>
         {

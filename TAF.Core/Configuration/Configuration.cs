@@ -46,6 +46,8 @@ public static class Configuration
         config.GetSection("Logging").Bind(Logging);
 
         LoggerConfigurator.Configure(Logging);
+        var log = AppLogger.For(typeof(Configuration));
+        log.Info($"Configuration loaded. Environment: '{environment}', Browser: '{BrowserType}', AppUrl: '{AppUrl}'.");
 
         // -------- Credentials from .env only --------
         Credentials.Username = Environment.GetEnvironmentVariable("TAF_USERNAME")

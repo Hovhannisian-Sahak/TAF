@@ -1,15 +1,15 @@
-using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using TAF.Core.Configuration;
+using TAF.Core.Logging;
 
 namespace TAF.Core.WebDriver
 {
     public static class WebDriverFactory
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(WebDriverFactory));
+        private static readonly log4net.ILog Log = AppLogger.For(typeof(WebDriverFactory));
 
         public static IWebDriver Create(BrowserType browser)
         {
