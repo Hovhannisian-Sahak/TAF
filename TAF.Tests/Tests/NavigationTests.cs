@@ -32,4 +32,13 @@ public class NavigationTests : UiTestBase
             .OpenInsights()
             .ValidateOpened();
     }
+    
+    [Test]
+    public void QuarterlyResultsPage_Should_Open_From_Home()
+    {
+        new HomeContext()
+            .OpenHome()
+            .OpenQuarterlyEarnings()
+            .ValidateOpened();
+    }
 }

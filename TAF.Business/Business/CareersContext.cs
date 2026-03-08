@@ -24,9 +24,9 @@ public class CareersContext
         ValidationRules.ValidatePageState(IsOpened(), "Careers page was not opened.");
     }
 
-    public CareersContext SearchByCriteria(string keyword, string location, bool remoteOnly = true)
+    public CareersContext SearchByCriteria(string keyword, string location)
     {
-        page.Search(keyword, location, remoteOnly);
+        page.Search(keyword, location);
         return this;
     }
 
@@ -41,6 +41,13 @@ public class CareersContext
         ValidationRules.ValidatePageState(
             page.IsKeywordPresentOnPage(keyword),
             $"Keyword '{keyword}' was not found on vacancy details page.");
+        return this;
+    }
+    public CareersContext ValidateCountryNamePresentOnDetails(string location)
+    {
+        ValidationRules.ValidatePageState(
+            page.IsCountryNamePresentOnPage(location),
+            $"Location '{location}' was not found on vacancy details page.");
         return this;
     }
 }

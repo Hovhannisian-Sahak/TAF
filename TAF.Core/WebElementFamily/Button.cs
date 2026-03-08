@@ -1,4 +1,6 @@
+using System;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace TAF.Core.WebElementFamily
 {
@@ -17,7 +19,19 @@ namespace TAF.Core.WebElementFamily
             Retry(() =>
             {
                 WaitUntilClickable(_locator);
+                ScrollIntoView(_locator);
                 Element(_locator).Click();
+            });
+        }
+
+        public void ClickWithActions()
+        {
+            Log.Info($"Click button with actions: {_locator}");
+            Retry(() =>
+            {
+                var element = Element(_locator);
+                ScrollIntoView(_locator);
+                new Actions(Driver).MoveToElement(element).DoubleClick().Perform();
             });
         }
 
@@ -27,5 +41,6 @@ namespace TAF.Core.WebElementFamily
             Click();
             WaitUntilUrlContains(urlPart);
         }
+        
     }
 }

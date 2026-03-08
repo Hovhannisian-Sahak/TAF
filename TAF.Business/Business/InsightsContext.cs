@@ -23,5 +23,27 @@ public class InsightsContext
     {
         ValidationRules.ValidatePageState(IsOpened(), "Insights page was not opened.");
     }
-}
 
+    public InsightsContext SwipeCarousel()
+    {
+        page.SwipeCarousel();
+        return this;
+    }
+
+    public string GetCarouselSlideTitle()
+    {
+        return page.GetCurrentArticleTitle();
+    }
+    
+    public InsightsContext OpenArticle()
+    {
+        page.OpenArticle();
+        return this;
+    }
+    
+    public InsightsContext ValidateOpenedArticleTitle(string expectedTitle)
+    {
+        page.ValidateOpenedArticleTitle(expectedTitle);
+        return this;
+    }
+}

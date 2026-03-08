@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using log4net;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using TAF.Core.WebDriver;
 
@@ -37,16 +39,60 @@ namespace TAF.Core.WebElement
             return CreateWait(timeoutSeconds)
                 .Until(driver => driver.FindElement(locator));
         }
-
-        protected void WaitUntilClickable(By locator, int? timeoutSeconds = null)
+        
+        protected IReadOnlyList<IWebElement> Elements(By locator, int? timeoutSeconds = null)
         {
-            Log.Debug($"Wait until clickable: {locator}");
-            CreateWait(timeoutSeconds)
+            Log.Debug($"Find elements: {locator}");
+            return CreateWait(timeoutSeconds)
                 .Until(driver =>
                 {
-                    var element = driver.FindElement(locator);
-                    return element.Displayed && element.Enabled ? element : null;
-                });
+                    var elements = driver.FindElements(locator);
+                    return elements.Count > 0 ? elements : null;
+                })!;
+        }
+        
+        protected void ScrollIntoView(By locator, int? timeoutSeconds = null)
+        {
+            var element = Element(locator, timeoutSeconds);
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({block:'center'});", element);
+        }
+
+        protected void ScrollIntoView(IWebElement element)
+        {
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({block:'center'});", element);
+        }
+
+        protected void Hover(By locator, int? timeoutSeconds = null)
+        {
+            Log.Debug($"Hover element: {locator}");
+            var element = Element(locator, timeoutSeconds);
+            new Actions(Driver).MoveToElement(element).Perform();
+        }
+
+        protected IWebElement WaitUntilClickable(By locator, int? timeoutSeconds = null)
+        {
+            Log.Debug($"Wait until clickable: {locator}");
+
+            var element = CreateWait(timeoutSeconds)
+                .Until(driver => driver.FindElement(locator)); // find in DOM
+
+            // Scroll into viewport
+            ScrollIntoView(element);
+
+            // Now wait until actually visible and enabled
+            return CreateWait(timeoutSeconds)
+                .Until(driver => element.Displayed && element.Enabled ? element : null);
+        }
+
+        protected IWebElement VisibleElement(By locator, int? timeoutSeconds = null)
+        {
+            Log.Debug($"Wait until visible element: {locator}");
+            return CreateWait(timeoutSeconds)
+                .Until(driver =>
+                {
+                    var elements = driver.FindElements(locator);
+                    return elements.FirstOrDefault(e => e.Displayed);
+                })!;
         }
 
         // =========================

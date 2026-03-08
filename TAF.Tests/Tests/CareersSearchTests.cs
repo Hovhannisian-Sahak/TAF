@@ -7,15 +7,16 @@ namespace TAF.Tests.Tests;
 [TestFixture]
 public class CareersSearchTests : UiTestBase
 {
-    [TestCase("Java", "All Locations")]
-    [TestCase("C#", "All Locations")]
+    [TestCase("Java", "Belarus")]
+    [TestCase("C#", "Armenia")]
     public void User_Can_Search_Position_And_Open_Latest_Result(string programmingLanguage, string location)
     {
         new HomeContext()
             .OpenHome()
             .OpenCareers()
-            .SearchByCriteria(programmingLanguage, location, remoteOnly: true)
+            .SearchByCriteria(programmingLanguage, location)
             .OpenLatestResultAndViewApply()
-            .ValidateKeywordPresentOnDetails(programmingLanguage);
+            .ValidateKeywordPresentOnDetails(programmingLanguage)
+            .ValidateCountryNamePresentOnDetails(location);
     }
 }

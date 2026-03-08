@@ -18,19 +18,31 @@ namespace TAF.Core.WebElementFamily
         public void SelectByText(string text)
         {
             Log.Info($"Select dropdown option by text '{text}': {_locator}");
-            Retry(() => Select.SelectByText(text));
+            Retry(() =>
+            {
+                ScrollIntoView(_locator);
+                Select.SelectByText(text);
+            });
         }
 
         public void SelectByValue(string value)
         {
             Log.Info($"Select dropdown option by value '{value}': {_locator}");
-            Retry(() => Select.SelectByValue(value));
+            Retry(() =>
+            {
+                ScrollIntoView(_locator);
+                Select.SelectByValue(value);
+            });
         }
 
         public void SelectByIndex(int index)
         {
             Log.Info($"Select dropdown option by index '{index}': {_locator}");
-            Retry(() => Select.SelectByIndex(index));
+            Retry(() =>
+            {
+                ScrollIntoView(_locator);
+                Select.SelectByIndex(index);
+            });
         }
 
         public string SelectedOption =>
@@ -41,5 +53,6 @@ namespace TAF.Core.WebElementFamily
             Log.Info($"Wait until dropdown selected option contains '{expectedText}': {_locator}");
             WaitUntilTextContains(_locator, expectedText);
         }
+        
     }
 }

@@ -16,6 +16,7 @@ namespace TAF.Core.WebElementFamily
             Log.Info($"Enter text into textbox: {_locator}");
             Retry(() =>
             {
+                ScrollIntoView(_locator);
                 var element = Element(_locator);
                 element.Clear();
                 element.SendKeys(text);
@@ -28,5 +29,6 @@ namespace TAF.Core.WebElementFamily
             EnterText(value);
             WaitUntilAttributeContains(_locator, "value", value);
         }
+        
     }
 }

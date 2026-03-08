@@ -18,8 +18,7 @@ namespace TAF.Core.WebElementFamily
             Log.Info($"Check checkbox: {_locator}");
             Retry(() =>
             {
-                if (!IsChecked)
-                    Element(_locator).Click();
+                ToggleTo(true);
             });
         }
 
@@ -28,9 +27,35 @@ namespace TAF.Core.WebElementFamily
             Log.Info($"Uncheck checkbox: {_locator}");
             Retry(() =>
             {
-                if (IsChecked)
-                    Element(_locator).Click();
+                ToggleTo(false);
             });
         }
+
+        private void ToggleTo(bool shouldBeChecked)
+        {
+            var element = Element(_locator);
+            if (element.Selected == shouldBeChecked)
+                return;
+
+            ScrollIntoView(_locator);
+
+            try
+            {
+                element.Click();
+            }
+            catch (WebDriverException)
+            {
+                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", element);
+            }
+
+            if (Element(_locator).Selected == shouldBeChecked)
+                return;
+
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", Element(_locator));
+
+            if (Element(_locator).Selected != shouldBeChecked)
+                throw new InvalidOperationException($"Failed to set checkbox '{_locator}' to '{shouldBeChecked}'.");
+        }
+        
     }
 }

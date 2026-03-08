@@ -26,6 +26,23 @@ public class HomeContext
         return new InsightsContext();
     }
 
+    public QuarterlyEarningsContext OpenQuarterlyEarnings()
+    {
+        page.OpenQuarterlyEarnings();
+        return new QuarterlyEarningsContext();
+    }
+    public HomeContext Search(string searchTerm)
+    {
+        page.Search(searchTerm);
+        return this;
+    }
+    
+    public HomeContext ValidateSearchResultsContain(string searchTerm)
+    {
+        page.ValidateSearchResultsContain(searchTerm);
+        return this;
+    }
+    
     public bool IsOpened()
     {
         return page.IsOpened();
@@ -36,4 +53,3 @@ public class HomeContext
         ValidationRules.ValidatePageState(IsOpened(), "Home page was not opened.");
     }
 }
-

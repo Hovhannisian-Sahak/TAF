@@ -1,8 +1,8 @@
 using OpenQA.Selenium;
 using System.Linq;
-using TAF.Business.Data;
 using BusinessData = TAF.Business.Data.Data;
 using TAF.Core.Configuration;
+using TAF.Core.WebElementFamily;
 
 namespace TAF.Business.ApplicationInterface;
 
@@ -21,19 +21,19 @@ public class CareersPage : BasePage
                 Driver.Title.Contains(BusinessData.CareersTitleKeyword, StringComparison.OrdinalIgnoreCase));
     }
 
-    public void Search(string keyword, string location, bool remoteOnly)
+    public void Search(string keyword, string location)
     {
-        AcceptCookiesIfVisible();
-        OpenSearchPanelIfNeeded();
-        EnterKeyword(keyword);
-        SelectLocation(location);
-
-        if (remoteOnly)
-        {
-            SelectRemote();
-        }
-
+        ClickStartSearch();
+        EnterRole(keyword);
+        EnterCountryName(location);
+        SelectRemote();
         ClickFind();
+    }
+    
+    private void ClickStartSearch()
+    {
+        var button = new Button(BusinessData.StartSearchButton);
+        button.Click();
     }
 
     public void OpenLatestAndViewApply()
@@ -41,38 +41,35 @@ public class CareersPage : BasePage
         AcceptCookiesIfVisible();
         WaitForSearchResults();
 
-        var cards = Driver.FindElements(BusinessData.SearchResultsCards);
-        if (cards.Count > 0)
+        var wait = CreateWait(Configuration.Timeouts.Long);
+        var expandButton = wait.Until(driver =>
         {
-            var latestCard = cards[cards.Count - 1];
-            var nestedButtons = latestCard.FindElements(By.XPath(
-                ".//a[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'view and apply')] | " +
-                ".//button[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'view and apply')]"));
+            var elements = driver.FindElements(BusinessData.CardExpandButton);
+            return elements.FirstOrDefault(e => e.Displayed && e.Enabled);
+        });
+        expandButton?.Click();
 
-            if (nestedButtons.Count > 0)
+        var applyButton = wait.Until(driver =>
+        {
+            var elements = driver.FindElements(BusinessData.ApplyButton);
+            return elements.FirstOrDefault(e => e.Displayed && e.Enabled);
+        });
+        applyButton?.Click();
+
+        try
+        {
+            var closeWait = CreateWait(Configuration.Timeouts.Default);
+            var closeButton = closeWait.Until(driver =>
             {
-                ScrollIntoView(nestedButtons[0]);
-                nestedButtons[0].Click();
-                return;
-            }
+                var elements = driver.FindElements(BusinessData.CloseModalButton);
+                return elements.FirstOrDefault(e => e.Displayed && e.Enabled);
+            });
+            closeButton?.Click();
         }
-
-        var allButtons = Driver.FindElements(BusinessData.ViewAndApplyButtons);
-        if (allButtons.Count == 0)
+        catch (WebDriverTimeoutException)
         {
-            var resultLinks = Driver.FindElements(BusinessData.ResultTitleLinks);
-            if (resultLinks.Count == 0)
-                throw new InvalidOperationException("No result link or 'View and apply' button was found in search results.");
-
-            var latestLink = resultLinks[resultLinks.Count - 1];
-            ScrollIntoView(latestLink);
-            latestLink.Click();
-            return;
+            // Modal did not appear; nothing to close.
         }
-
-        var latestButton = allButtons[allButtons.Count - 1];
-        ScrollIntoView(latestButton);
-        latestButton.Click();
     }
 
     public bool IsKeywordPresentOnPage(string keyword)
@@ -81,99 +78,46 @@ public class CareersPage : BasePage
         return wait.Until(driver =>
             driver.PageSource.Contains(keyword, StringComparison.OrdinalIgnoreCase));
     }
-
-    private void EnterKeyword(string keyword)
+    
+    public bool IsCountryNamePresentOnPage(string location)
     {
         var wait = CreateWait(Configuration.Timeouts.Long);
-        var input = wait.Until(driver => driver.FindElement(BusinessData.KeywordInput));
-        ScrollIntoView(input);
-        input.Clear();
-        input.SendKeys(keyword);
+        return wait.Until(driver =>
+            driver.PageSource.Contains(location, StringComparison.OrdinalIgnoreCase));
     }
 
-    private void OpenSearchPanelIfNeeded()
+    private void EnterRole(string keyword)
     {
-        if (Driver.FindElements(BusinessData.KeywordInput).Count > 0)
-            return;
-
-        var searchTriggers = Driver.FindElements(BusinessData.StartSearchHereButton);
-        if (searchTriggers.Count == 0)
-            return;
-
-        try
-        {
-            ScrollIntoView(searchTriggers[0]);
-            searchTriggers[0].Click();
-        }
-        catch (WebDriverException)
-        {
-            // Ignore and let keyword wait handle final timeout if panel cannot be opened.
-        }
+        var input = new TextBox(BusinessData.KeywordInput);
+        input.EnterText(keyword);
     }
 
-    private void SelectLocation(string location)
+    private void EnterCountryName(string name)
     {
-        for (var attempt = 0; attempt < Configuration.Timeouts.Retry; attempt++)
-        {
-            try
-            {
-                var wait = CreateWait(Configuration.Timeouts.Long);
-                var input = wait.Until(driver =>
-                {
-                    var candidates = driver.FindElements(BusinessData.LocationInput);
-                    return candidates.FirstOrDefault(e => e.Displayed) ?? candidates.FirstOrDefault();
-                });
-
-                if (input == null)
-                    throw new NoSuchElementException("Location input was not found.");
-
-                ScrollIntoView(input);
-                input.SendKeys(Keys.Control + "a");
-                input.SendKeys(Keys.Delete);
-
-                if (!location.Equals("All Locations", StringComparison.OrdinalIgnoreCase))
-                {
-                    input.SendKeys(location);
-                    input.SendKeys(Keys.Enter);
-                }
-
-                return;
-            }
-            catch (StaleElementReferenceException) when (attempt < Configuration.Timeouts.Retry - 1)
-            {
-                // retry
-            }
-            catch (ElementNotInteractableException) when (attempt < Configuration.Timeouts.Retry - 1)
-            {
-                // retry
-            }
-        }
-
-        throw new InvalidOperationException("Failed to set location filter.");
+        var input = new TextBox(BusinessData.LocationInput);
+        input.EnterText(name);
     }
 
     private void SelectRemote()
     {
-        var wait = CreateWait(Configuration.Timeouts.Long);
-        var option = wait.Until(driver => driver.FindElement(BusinessData.RemoteOption));
-        ScrollIntoView(option);
-        option.Click();
+        var option = new CheckBox(BusinessData.RemoteOption);
+        if (option.IsChecked)
+            return;
+        
+        option.Check();
     }
 
     private void ClickFind()
     {
-        var wait = CreateWait(Configuration.Timeouts.Long);
-        var button = wait.Until(driver => driver.FindElement(BusinessData.FindButton));
-        ScrollIntoView(button);
+        var button = new Button(BusinessData.FindButton);
         button.Click();
     }
-
+    
     private void WaitForSearchResults()
     {
         var wait = CreateWait(Configuration.Timeouts.Long);
         wait.Until(driver =>
-            driver.FindElements(BusinessData.SearchResultsCards).Count > 0 ||
-            driver.FindElements(BusinessData.ViewAndApplyButtons).Count > 0);
+            driver.FindElements(BusinessData.SearchResultsCards).Count > 0);
     }
 
 }
