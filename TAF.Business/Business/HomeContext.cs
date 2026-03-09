@@ -50,6 +50,12 @@ public class HomeContext
         page.ValidateSearchResultsContain(searchTerm);
         return this;
     }
+
+    public bool AreSearchResultsContain(string searchTerm)
+    {
+        Log.Info($"Check search results contain: '{searchTerm}'.");
+        return page.AreSearchResultsContain(searchTerm);
+    }
     
     public bool IsOpened()
     {

@@ -15,9 +15,14 @@ public class QuarterlyEarningsTests:UiTestBase
     public void Open_Download_Doc_In_New_Window()
     {
         Log.Info("Test start: open Quarterly Earnings download link.");
-        new HomeContext()
+        var quarterlyEarnings = new HomeContext()
             .OpenHome()
-            .OpenQuarterlyEarnings()
-            .ClickDownload();
+            .OpenQuarterlyEarnings();
+
+        Assert.That(quarterlyEarnings.IsOpened(), Is.True, "Expected Quarterly Earnings page to be opened.");
+
+        quarterlyEarnings.ClickDownload();
+        Assert.That(quarterlyEarnings.IsDownloadPageOpened(), Is.True,
+            "Expected Quarterly Earnings download page to be opened in a new window.");
     }
 }

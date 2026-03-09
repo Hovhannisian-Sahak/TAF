@@ -14,9 +14,11 @@ public class GlobalSearchTests: UiTestBase
     public void User_Can_Use_Global_Search(string searchTerm)
     {
         Log.Info($"Test start: global search '{searchTerm}'.");
-        new HomeContext()
+        var home = new HomeContext()
             .OpenHome()
-            .Search(searchTerm)
-            .ValidateSearchResultsContain(searchTerm);
+            .Search(searchTerm);
+
+        Assert.That(home.AreSearchResultsContain(searchTerm), Is.True,
+            $"Expected search results to contain '{searchTerm}'.");
     }
 }

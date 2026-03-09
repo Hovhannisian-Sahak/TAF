@@ -50,6 +50,12 @@ public class CareersContext
             $"Keyword '{keyword}' was not found on vacancy details page.");
         return this;
     }
+
+    public bool IsKeywordPresentOnDetails(string keyword)
+    {
+        Log.Info($"Check keyword present on details: '{keyword}'.");
+        return page.IsKeywordPresentOnPage(keyword);
+    }
     public CareersContext ValidateCountryNamePresentOnDetails(string location)
     {
         Log.Info($"Validate location present on details: '{location}'.");
@@ -57,5 +63,11 @@ public class CareersContext
             page.IsCountryNamePresentOnPage(location),
             $"Location '{location}' was not found on vacancy details page.");
         return this;
+    }
+
+    public bool IsCountryNamePresentOnDetails(string location)
+    {
+        Log.Info($"Check location present on details: '{location}'.");
+        return page.IsCountryNamePresentOnPage(location);
     }
 }

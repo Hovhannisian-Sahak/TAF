@@ -56,11 +56,17 @@ public class InsightsPage : BasePage
     }
     public void ValidateOpenedArticleTitle(string expectedTitle)
     {
-        var title = new TextElement(BusinessData.CarouselSlideArticleHeader).Text;
+        var title = GetOpenedArticleTitle();
         Log.Info($"Validate opened article title. Expected: '{expectedTitle}', Actual: '{title}'.");
         if (!title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase))
         {
             throw new Exception($"Opened article title '{title}' does not match expected title '{expectedTitle}'.");
         }
+    }
+
+    public string GetOpenedArticleTitle()
+    {
+        Log.Info("Get opened article title.");
+        return new TextElement(BusinessData.CarouselSlideArticleHeader).Text;
     }
 }

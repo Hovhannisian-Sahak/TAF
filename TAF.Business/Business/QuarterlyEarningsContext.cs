@@ -35,4 +35,10 @@ public class QuarterlyEarningsContext
             page.ClickDownload();
             return this;
         }
+
+        public bool IsDownloadPageOpened()
+        {
+            Log.Info("Check Quarterly Earnings download page opened.");
+            return page.IsDownloadPageOpened();
+        }
 }

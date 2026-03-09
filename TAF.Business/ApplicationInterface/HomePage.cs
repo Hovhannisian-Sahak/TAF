@@ -91,14 +91,19 @@ public class HomePage : BasePage
     public void ValidateSearchResultsContain(string expectedText)
     {
         Log.Info($"Validate search results contain: '{expectedText}'.");
+        AreSearchResultsContain(expectedText);
+    }
+
+    public bool AreSearchResultsContain(string expectedText)
+    {
+        Log.Info($"Check search results contain: '{expectedText}'.");
         var wait = CreateWait(Configuration.Timeouts.Long);
-        wait.Until(driver =>
+        return wait.Until(driver =>
         {
             var links = driver.FindElements(BusinessData.SearchResultTexts);
             return links.Count > 0 &&
                    links.All(link => link.Text.Contains(expectedText, StringComparison.OrdinalIgnoreCase));
         });
-        
     }
     
     private void MoveToAboutLink()

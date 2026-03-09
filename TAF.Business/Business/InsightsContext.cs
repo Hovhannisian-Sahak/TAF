@@ -54,4 +54,10 @@ public class InsightsContext
         page.ValidateOpenedArticleTitle(expectedTitle);
         return this;
     }
+
+    public string GetOpenedArticleTitle()
+    {
+        Log.Info("Get opened article title.");
+        return page.GetOpenedArticleTitle();
+    }
 }

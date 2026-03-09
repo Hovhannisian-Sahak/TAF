@@ -13,13 +13,15 @@ public class InsightsTests : UiTestBase
     public void Swipe_Carousel_On_Insights_Page()
     {
         Log.Info("Test start: swipe insights carousel and open article.");
-        new HomeContext()
+        var insights = new HomeContext()
             .OpenHome()
             .OpenInsights()
             .SwipeCarousel();
-        var firstArticleTitle = new InsightsContext().GetCarouselSlideTitle();
-        new InsightsContext()
-            .OpenArticle()
-            .ValidateOpenedArticleTitle(firstArticleTitle);
+        var firstArticleTitle = insights.GetCarouselSlideTitle();
+        Assert.That(firstArticleTitle, Is.Not.Null.And.Not.Empty, "Expected carousel article title to be populated.");
+
+        insights.OpenArticle();
+        Assert.That(insights.GetOpenedArticleTitle(), Is.EqualTo(firstArticleTitle).IgnoreCase,
+            "Expected opened article title to match the carousel title.");
     }
 }

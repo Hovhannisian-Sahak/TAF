@@ -41,5 +41,11 @@ public class QuarterlyEarnings: BasePage
         wait.Until(_ => Driver.Url.Contains(BusinessData.QuarterlyEarningsDownloadUrlContains, StringComparison.OrdinalIgnoreCase));
         Log.Info($"Download page opened: {Driver.Url}");
     }
+
+    public bool IsDownloadPageOpened()
+    {
+        Log.Info("Check Quarterly Earnings download page opened.");
+        return Driver.Url.Contains(BusinessData.QuarterlyEarningsDownloadUrlContains, StringComparison.OrdinalIgnoreCase);
+    }
     
 }
