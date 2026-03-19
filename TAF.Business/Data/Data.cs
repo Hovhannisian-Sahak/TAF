@@ -25,8 +25,8 @@ public static class Data
         "//a[contains(translate(@href,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'insights') or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'insight')]");
     
     public static readonly By AboutUsNavigationLink = By.XPath(
-        "//header//a[normalize-space()='About']");
-    
+        "//a[contains(translate(@href,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'about') or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'about')]");
+
     public static readonly By QuarterlyEarningsNavigationLink = By.XPath(
         "//a[contains(translate(@href,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'quarterly-earnings') or contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'quarterly-earnings')]");
     
@@ -36,7 +36,7 @@ public static class Data
     public static readonly By CareersHeader = By.XPath("//*[@id='wrapper']//a[contains(text(),'Careers')]");
     public static readonly By InsightsHeader = By.XPath("//*[@id='wrapper']//a[contains(text(),'Insights')]");
     public static readonly By QuarterlyEarningsHeader = By.XPath("//div[contains(@class,'module-breadcrumb')]//*[normalize-space()='Quarterly Earnings']");
-    public static readonly By StartSearchButton = By.XPath("//*[@data-gtm-category='job_search_redirect']");
+    public static readonly By StartSearchButton = By.XPath("//div[@data-gtm-category='job_search_redirect']");
 
     public static readonly By InsightsReadMoreLink = By.XPath("//div[contains(@class,'slider-ui-23') and @data-configuration='single-full-width']//div[contains(@class,'owl-item') and contains(@class,'active') and @aria-hidden='false']//a[contains(@class,'slider-cta-link')]");
     public static readonly By InsightsCarouselNextButton = By.ClassName("slider__right-arrow");
