@@ -72,4 +72,14 @@ public static class Validations
             throw new InvalidOperationException(message);
         }
     }
+
+    public static void ValidateApiOptions(ApiOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(options.BaseUrl))
+        {
+            const string message = "Api:BaseUrl is missing.";
+            Log.Error(message);
+            throw new InvalidOperationException(message);
+        }
+    }
 }

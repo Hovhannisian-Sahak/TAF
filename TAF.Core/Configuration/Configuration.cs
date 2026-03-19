@@ -15,6 +15,7 @@ public static class Configuration
     public static Credentials Credentials { get; private set; } = new();
     public static BrowserOptions BrowserOptions { get; private set; } = new();
     public static LoggingOptions Logging { get; private set; } = new();
+    public static ApiOptions Api { get; private set; } = new();
 
     private static void Init()
     {
@@ -44,6 +45,7 @@ public static class Configuration
         config.GetSection("Timeouts").Bind(Timeouts);
         config.GetSection("BrowserOptions").Bind(BrowserOptions);
         config.GetSection("Logging").Bind(Logging);
+        config.GetSection("Api").Bind(Api);
 
         LoggerConfigurator.Configure(Logging);
         var log = AppLogger.For(typeof(Configuration));
@@ -59,6 +61,7 @@ public static class Configuration
         // -------- Validation --------
         Validations.ValidateTimeouts(Timeouts);
         Validations.ValidateCredentials(Credentials);
+        Validations.ValidateApiOptions(Api);
     }
 
     private static string ResolveConfigurationBasePath()
