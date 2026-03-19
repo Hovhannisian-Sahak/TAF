@@ -36,10 +36,11 @@ public static class Data
     public static readonly By CareersHeader = By.XPath("//*[@id='wrapper']//a[contains(text(),'Careers')]");
     public static readonly By InsightsHeader = By.XPath("//*[@id='wrapper']//a[contains(text(),'Insights')]");
     public static readonly By QuarterlyEarningsHeader = By.XPath("//div[contains(@class,'module-breadcrumb')]//*[normalize-space()='Quarterly Earnings']");
-    public static readonly By StartSearchButton = By.XPath("//div[@data-gtm-category='job_search_redirect']");
+    public static readonly By StartSearchButton = By.XPath(
+        "//*[@data-gtm-category='job_search_redirect']//a | //*[@data-gtm-category='job_search_redirect']");
 
     public static readonly By InsightsReadMoreLink = By.XPath("//div[contains(@class,'slider-ui-23') and @data-configuration='single-full-width']//div[contains(@class,'owl-item') and contains(@class,'active') and @aria-hidden='false']//a[contains(@class,'slider-cta-link')]");
-    public static readonly By InsightsCarouselNextButton = By.ClassName("slider__right-arrow");
+    public static readonly By InsightsCarouselNextButton = By.CssSelector("button.slider__right-arrow");
     public static readonly By ArticleHeading = By.XPath("//h1[normalize-space()]");
 
     public static readonly By KeywordInput = By.CssSelector("#anchor-list-wrapper .SearchBox_input__sJnt2");

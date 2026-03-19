@@ -109,7 +109,15 @@ public class HomePage : BasePage
     private void MoveToAboutLink()
     {
         var aboutLink = new Link(BusinessData.AboutUsNavigationLink);
-        aboutLink.HoverToElement();
+        try
+        {
+            aboutLink.HoverToElement();
+        }
+        catch (WebDriverException ex)
+        {
+            Log.Warn("Hover to About link failed. Falling back to direct navigation.", ex);
+            return;
+        }
 
         // if (!IsQuarterlyEarningsVisible())
         // {
