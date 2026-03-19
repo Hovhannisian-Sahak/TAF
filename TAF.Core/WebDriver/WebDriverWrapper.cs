@@ -47,5 +47,6 @@ namespace TAF.Core.WebDriver
             DriverThread.Value.Dispose();
             DriverThread.Value = null;
         }
+        
     }
 }

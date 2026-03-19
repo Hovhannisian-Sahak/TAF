@@ -24,6 +24,16 @@ namespace TAF.Core.WebElementFamily
             });
         }
 
+        public void ClickWhenInViewport()
+        {
+            Log.Info($"Click button when in viewport: {_locator}");
+            Retry(() =>
+            {
+                var element = WaitUntilInViewport(_locator);
+                element.Click();
+            });
+        }
+
         public void ClickWithActions()
         {
             Log.Info($"Click button with actions: {_locator}");

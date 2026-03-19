@@ -84,6 +84,31 @@ namespace TAF.Core.WebElement
                 .Until(driver => element.Displayed && element.Enabled ? element : null);
         }
 
+        protected IWebElement WaitUntilInViewport(By locator, int? timeoutSeconds = null)
+        {
+            Log.Debug($"Wait until element is in viewport: {locator}");
+
+            var element = CreateWait(timeoutSeconds)
+                .Until(driver => driver.FindElement(locator));
+
+            ScrollIntoView(element);
+
+            return CreateWait(timeoutSeconds).Until(_ =>
+            {
+                if (!element.Displayed)
+                    return null;
+
+                var inViewport = (bool)((IJavaScriptExecutor)Driver).ExecuteScript(
+                    "var r = arguments[0].getBoundingClientRect();" +
+                    "var h = (window.innerHeight || document.documentElement.clientHeight);" +
+                    "var w = (window.innerWidth || document.documentElement.clientWidth);" +
+                    "return r.bottom > 0 && r.right > 0 && r.top < h && r.left < w;",
+                    element);
+
+                return inViewport ? element : null;
+            });
+        }
+
         protected IWebElement VisibleElement(By locator, int? timeoutSeconds = null)
         {
             Log.Debug($"Wait until visible element: {locator}");

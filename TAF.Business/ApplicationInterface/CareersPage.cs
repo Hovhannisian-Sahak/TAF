@@ -39,7 +39,7 @@ public class CareersPage : BasePage
     private void ClickStartSearch()
     {
         var button = new Button(BusinessData.StartSearchButton);
-        button.Click();
+        button.ClickWhenInViewport();
     }
 
     public void OpenLatestAndViewApply()
