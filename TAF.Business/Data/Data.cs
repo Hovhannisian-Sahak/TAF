@@ -40,7 +40,7 @@ public static class Data
         "//*[@data-gtm-category='job_search_redirect']//a | //*[@data-gtm-category='job_search_redirect']");
 
     public static readonly By InsightsReadMoreLink = By.XPath("//div[contains(@class,'slider-ui-23') and @data-configuration='single-full-width']//div[contains(@class,'owl-item') and contains(@class,'active') and @aria-hidden='false']//a[contains(@class,'slider-cta-link')]");
-    public static readonly By InsightsCarouselNextButton = By.CssSelector("button.slider__right-arrow");
+    public static readonly By InsightsCarouselNextButton = By.ClassName("slider__right-arrow");
     public static readonly By ArticleHeading = By.XPath("//h1[normalize-space()]");
 
     public static readonly By KeywordInput = By.CssSelector("#anchor-list-wrapper .SearchBox_input__sJnt2");

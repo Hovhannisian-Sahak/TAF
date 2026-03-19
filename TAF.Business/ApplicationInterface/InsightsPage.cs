@@ -31,7 +31,7 @@ public class InsightsPage : BasePage
     public void SwipeCarousel()
     {
         Log.Info("Swipe Insights carousel.");
-        new Button(BusinessData.InsightsCarouselNextButton).ClickWhenInViewport();
+        new Button(BusinessData.InsightsCarouselNextButton).ClickWithActions();
     }
     
     public string GetCurrentArticleTitle()
