@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using System;
 using System.Linq;
 using TAF.Business.Data;
 using TAF.Core.Configuration;
@@ -14,6 +15,7 @@ public class HomePage : BasePage
     private readonly Link careersNavigationLink = new(BusinessData.CareersNavigationLink);
     private readonly Link insightsNavigationLink = new(BusinessData.InsightsNavigationLink);
     private readonly Link quarterlyEarningsNavigationLink = new(BusinessData.QuarterlyEarningsNavigationLink);
+    private readonly Link servicesNavigationLink = new(BusinessData.ServicesNavigationLink);
     public void Open()
     {
         Log.Info("Open Home page.");
@@ -41,6 +43,38 @@ public class HomePage : BasePage
         AcceptCookiesIfVisible();
         MoveToAboutLink();
         TryOpenFromMenuOrNavigateDirect(quarterlyEarningsNavigationLink,BusinessData.QuarterlyEarningsRelativeUrl);
+    }
+
+    public void OpenServiceCategory(string categoryName)
+    {
+        Log.Info($"Open Services category '{categoryName}' from Home.");
+        AcceptCookiesIfVisible();
+
+        try
+        {
+            servicesNavigationLink.HoverToElement();
+        }
+        catch (WebDriverException ex)
+        {
+            Log.Warn("Hover to Services link failed. Falling back to click.", ex);
+            servicesNavigationLink.Click();
+        }
+
+        var wait = CreateWait(Configuration.Timeouts.Long);
+        var categoryLocator = BuildServicesCategoryLocator(categoryName);
+        var categoryLink = wait.Until(driver =>
+        {
+            var elements = driver.FindElements(categoryLocator);
+            return elements.FirstOrDefault(e => e.Displayed && e.Enabled);
+        });
+
+        if (categoryLink == null)
+        {
+            throw new NoSuchElementException($"Service category '{categoryName}' not found.");
+        }
+
+        ScrollIntoView(categoryLink);
+        categoryLink.Click();
     }
 
     public bool IsOpened()
@@ -132,5 +166,12 @@ public class HomePage : BasePage
     {
         var links = Driver.FindElements(BusinessData.QuarterlyEarningsNavigationLink);
         return links.Any(link => link.Displayed);
+    }
+
+    private static By BuildServicesCategoryLocator(string categoryName)
+    {
+        var normalized = categoryName.Trim().ToLowerInvariant();
+        return By.XPath(
+            $"//a[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'{normalized}')]");
     }
 }

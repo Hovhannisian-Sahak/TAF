@@ -59,4 +59,16 @@ public abstract class StepBase
         ScenarioContext[ScenarioKeys.QuarterlyEarningsContext] = quarterly;
         return quarterly;
     }
+
+    protected ServicesContext GetServices()
+    {
+        if (ScenarioContext.TryGetValue(ScenarioKeys.ServicesContext, out ServicesContext? services) && services != null)
+        {
+            return services;
+        }
+
+        services = new ServicesContext();
+        ScenarioContext[ScenarioKeys.ServicesContext] = services;
+        return services;
+    }
 }
