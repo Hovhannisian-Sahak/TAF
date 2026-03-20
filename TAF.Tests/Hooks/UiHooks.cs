@@ -19,7 +19,7 @@ public sealed class UiHooks
         this.scenarioContext = scenarioContext;
     }
 
-    [BeforeScenario(Order = 0)]
+    [BeforeScenario("ui", Order = 0)]
     public void BeforeScenario()
     {
         _ = Configuration.BrowserType; // force configuration + logging setup
@@ -40,7 +40,7 @@ public sealed class UiHooks
         }
     }
 
-    [AfterScenario]
+    [AfterScenario("ui")]
     public void AfterScenario()
     {
         try

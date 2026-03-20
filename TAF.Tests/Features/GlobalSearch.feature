@@ -1,3 +1,4 @@
+@ui
 Feature: Global search
   As a visitor
   I want to search the site

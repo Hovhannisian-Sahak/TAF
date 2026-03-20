@@ -1,3 +1,4 @@
+@ui
 Feature: Insights carousel
   As a visitor
   I want to open an Insights article from the carousel

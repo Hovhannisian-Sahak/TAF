@@ -17,9 +17,24 @@ namespace TAF.Core.WebElementFamily
             Retry(() =>
             {
                 ScrollIntoView(_locator);
-                var element = Element(_locator);
-                element.Clear();
-                element.SendKeys(text);
+                var element = WaitUntilClickable(_locator);
+                try
+                {
+                    element.Clear();
+                }
+                catch (WebDriverException)
+                {
+                    ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].value='';", element);
+                }
+
+                try
+                {
+                    element.SendKeys(text);
+                }
+                catch (WebDriverException)
+                {
+                    ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].focus(); arguments[0].value=arguments[1];", element, text);
+                }
             });
         }
 

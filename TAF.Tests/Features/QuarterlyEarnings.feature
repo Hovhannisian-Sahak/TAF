@@ -1,3 +1,4 @@
+@ui
 Feature: Quarterly earnings download
   As a visitor
   I want to open the quarterly earnings download

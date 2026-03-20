@@ -1,3 +1,4 @@
+@ui
 Feature: Site navigation
   As a visitor
   I want to open main sections from Home

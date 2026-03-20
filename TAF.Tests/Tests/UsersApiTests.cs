@@ -10,6 +10,7 @@ namespace TAF.Tests.Tests;
 [TestFixture]
 [Category("API")]
 [Parallelizable(ParallelScope.All)]
+[Ignore("Replaced by BDD feature UsersApi.feature")]
 public class UsersApiTests
 {
     private static readonly log4net.ILog Log = AppLogger.For<UsersApiTests>();

@@ -1,3 +1,4 @@
+@ui
 Feature: Careers search
   As a visitor
   I want to search for open positions
