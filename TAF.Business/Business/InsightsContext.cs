@@ -51,7 +51,9 @@ public class InsightsContext
     public InsightsContext ValidateOpenedArticleTitle(string expectedTitle)
     {
         Log.Info($"Validate opened article title matches: '{expectedTitle}'.");
-        page.ValidateOpenedArticleTitle(expectedTitle);
+        ValidationRules.ValidatePageState(
+            page.IsOpenedArticleTitle(expectedTitle),
+            $"Opened article title does not match expected title '{expectedTitle}'.");
         return this;
     }
 

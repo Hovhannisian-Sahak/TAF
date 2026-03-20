@@ -38,8 +38,8 @@ public class CareersPage : BasePage
     
     private void ClickStartSearch()
     {
-        var button = new Button(BusinessData.StartSearchButton);
-        button.ClickWhenInViewport();
+        var button = new Link(BusinessData.StartSearchButton);
+        button.Click();
     }
 
     public void OpenLatestAndViewApply()

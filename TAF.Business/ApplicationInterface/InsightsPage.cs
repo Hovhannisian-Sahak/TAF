@@ -54,14 +54,11 @@ public class InsightsPage : BasePage
 
         link.ScrollToElementAndClick();
     }
-    public void ValidateOpenedArticleTitle(string expectedTitle)
+    public bool IsOpenedArticleTitle(string expectedTitle)
     {
         var title = GetOpenedArticleTitle();
-        Log.Info($"Validate opened article title. Expected: '{expectedTitle}', Actual: '{title}'.");
-        if (!title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new Exception($"Opened article title '{title}' does not match expected title '{expectedTitle}'.");
-        }
+        Log.Info($"Check opened article title. Expected: '{expectedTitle}', Actual: '{title}'.");
+        return title.Equals(expectedTitle, StringComparison.OrdinalIgnoreCase);
     }
 
     public string GetOpenedArticleTitle()
