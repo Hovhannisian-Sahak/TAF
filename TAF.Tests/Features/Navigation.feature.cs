@@ -108,7 +108,7 @@ namespace TAF.Tests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Navigation.feature.ndjson", 5);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Navigation.feature.ndjson", 7);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -143,6 +143,45 @@ namespace TAF.Tests.Features
 #line hidden
 #line 10
     await testRunner.ThenAsync(string.Format("the \"{0}\" page should be opened", page), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Navigate to Services category from Home")]
+        [global::NUnit.Framework.TestCaseAttribute("Generative AI", "3", null)]
+        [global::NUnit.Framework.TestCaseAttribute("Responsible AI", "4", null)]
+        public async global::System.Threading.Tasks.Task NavigateToServicesCategoryFromHome(string category, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Category", category);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate to Services category from Home", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 18
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 19
+    await testRunner.GivenAsync("I am on the Home page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 20
+    await testRunner.WhenAsync(string.Format("I open the \"{0}\" service from Home", category), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 21
+    await testRunner.ThenAsync(string.Format("the \"{0}\" service page title should be displayed", category), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 22
+    await testRunner.AndAsync("the \"Our Related Expertise\" section should be displayed", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

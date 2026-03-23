@@ -1,6 +1,7 @@
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using System.Text;
 using TAF.Business.Data;
 using TAF.Core.Configuration;
 using TAF.Core.Logging;
@@ -49,32 +50,11 @@ public class HomePage : BasePage
     {
         Log.Info($"Open Services category '{categoryName}' from Home.");
         AcceptCookiesIfVisible();
-
-        try
-        {
-            servicesNavigationLink.HoverToElement();
-        }
-        catch (WebDriverException ex)
-        {
-            Log.Warn("Hover to Services link failed. Falling back to click.", ex);
-            servicesNavigationLink.Click();
-        }
-
-        var wait = CreateWait(Configuration.Timeouts.Long);
+        MoveToServicesLink(categoryName);
         var categoryLocator = BuildServicesCategoryLocator(categoryName);
-        var categoryLink = wait.Until(driver =>
-        {
-            var elements = driver.FindElements(categoryLocator);
-            return elements.FirstOrDefault(e => e.Displayed && e.Enabled);
-        });
-
-        if (categoryLink == null)
-        {
-            throw new NoSuchElementException($"Service category '{categoryName}' not found.");
-        }
-
-        ScrollIntoView(categoryLink);
-        categoryLink.Click();
+        var categoryLink = new Link(categoryLocator);
+        var expectedPath = BuildServicesCategoryRelativeUrl(categoryName);
+        TryOpenFromMenuOrNavigateDirect(categoryLink, expectedPath);
     }
 
     public bool IsOpened()
@@ -166,6 +146,55 @@ public class HomePage : BasePage
     {
         var links = Driver.FindElements(BusinessData.QuarterlyEarningsNavigationLink);
         return links.Any(link => link.Displayed);
+    }
+
+    private void MoveToServicesLink(string categoryName)
+    {
+        try
+        {
+            servicesNavigationLink.HoverToElement();
+        }
+        catch (WebDriverException ex)
+        {
+            Log.Warn("Hover to Services link failed. Falling back to direct navigation.", ex);
+            return;
+        }
+
+        var wait = CreateWait(Configuration.Timeouts.Long);
+        wait.Until(_ => IsServicesCategoryVisible(categoryName));
+    }
+
+    private bool IsServicesCategoryVisible(string categoryName)
+    {
+        var links = Driver.FindElements(BuildServicesCategoryLocator(categoryName));
+        return links.Any(link => link.Displayed);
+    }
+
+    private static string BuildServicesCategoryRelativeUrl(string categoryName)
+    {
+        var normalized = categoryName.Trim().ToLowerInvariant();
+        var builder = new StringBuilder(normalized.Length);
+        var pendingDash = false;
+
+        foreach (var c in normalized)
+        {
+            if (char.IsLetterOrDigit(c))
+            {
+                if (pendingDash && builder.Length > 0)
+                {
+                    builder.Append('-');
+                }
+
+                builder.Append(c);
+                pendingDash = false;
+                continue;
+            }
+
+            pendingDash = true;
+        }
+
+        var slug = builder.ToString().Trim('-');
+        return $"/services/{slug}";
     }
 
     private static By BuildServicesCategoryLocator(string categoryName)
