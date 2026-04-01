@@ -1,5 +1,7 @@
 using OpenQA.Selenium;
+using System;
 using System.Linq;
+using System.Text;
 using TAF.Business.Data;
 using TAF.Core.Configuration;
 using TAF.Core.Logging;
@@ -14,6 +16,7 @@ public class HomePage : BasePage
     private readonly Link careersNavigationLink = new(BusinessData.CareersNavigationLink);
     private readonly Link insightsNavigationLink = new(BusinessData.InsightsNavigationLink);
     private readonly Link quarterlyEarningsNavigationLink = new(BusinessData.QuarterlyEarningsNavigationLink);
+    private readonly Link servicesNavigationLink = new(BusinessData.ServicesNavigationLink);
     public void Open()
     {
         Log.Info("Open Home page.");
@@ -41,6 +44,17 @@ public class HomePage : BasePage
         AcceptCookiesIfVisible();
         MoveToAboutLink();
         TryOpenFromMenuOrNavigateDirect(quarterlyEarningsNavigationLink,BusinessData.QuarterlyEarningsRelativeUrl);
+    }
+
+    public void OpenServiceCategory(string categoryName)
+    {
+        Log.Info($"Open Services category '{categoryName}' from Home.");
+        AcceptCookiesIfVisible();
+        MoveToServicesLink(categoryName);
+        var categoryLocator = BuildServicesCategoryLocator(categoryName);
+        var categoryLink = new Link(categoryLocator);
+        var expectedPath = BuildServicesCategoryRelativeUrl(categoryName);
+        TryOpenFromMenuOrNavigateDirect(categoryLink, expectedPath);
     }
 
     public bool IsOpened()
@@ -132,5 +146,61 @@ public class HomePage : BasePage
     {
         var links = Driver.FindElements(BusinessData.QuarterlyEarningsNavigationLink);
         return links.Any(link => link.Displayed);
+    }
+
+    private void MoveToServicesLink(string categoryName)
+    {
+        try
+        {
+            servicesNavigationLink.HoverToElement();
+        }
+        catch (WebDriverException ex)
+        {
+            Log.Warn("Hover to Services link failed. Falling back to direct navigation.", ex);
+            return;
+        }
+
+        var wait = CreateWait(Configuration.Timeouts.Long);
+        wait.Until(_ => IsServicesCategoryVisible(categoryName));
+    }
+
+    private bool IsServicesCategoryVisible(string categoryName)
+    {
+        var links = Driver.FindElements(BuildServicesCategoryLocator(categoryName));
+        return links.Any(link => link.Displayed);
+    }
+
+    private static string BuildServicesCategoryRelativeUrl(string categoryName)
+    {
+        var normalized = categoryName.Trim().ToLowerInvariant();
+        var builder = new StringBuilder(normalized.Length);
+        var pendingDash = false;
+
+        foreach (var c in normalized)
+        {
+            if (char.IsLetterOrDigit(c))
+            {
+                if (pendingDash && builder.Length > 0)
+                {
+                    builder.Append('-');
+                }
+
+                builder.Append(c);
+                pendingDash = false;
+                continue;
+            }
+
+            pendingDash = true;
+        }
+
+        var slug = builder.ToString().Trim('-');
+        return $"/services/{slug}";
+    }
+
+    private static By BuildServicesCategoryLocator(string categoryName)
+    {
+        var normalized = categoryName.Trim().ToLowerInvariant();
+        return By.XPath(
+            $"//a[contains(translate(normalize-space(.),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'{normalized}')]");
     }
 }

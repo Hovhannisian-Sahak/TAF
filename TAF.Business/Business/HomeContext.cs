@@ -37,6 +37,13 @@ public class HomeContext
         page.OpenQuarterlyEarnings();
         return new QuarterlyEarningsContext();
     }
+
+    public ServicesContext OpenServiceCategory(string categoryName)
+    {
+        Log.Info($"Navigate to Services category '{categoryName}' from Home.");
+        page.OpenServiceCategory(categoryName);
+        return new ServicesContext();
+    }
     public HomeContext Search(string searchTerm)
     {
         Log.Info($"Global search: '{searchTerm}'.");

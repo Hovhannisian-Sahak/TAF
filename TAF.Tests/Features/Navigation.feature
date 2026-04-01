@@ -14,3 +14,14 @@ Feature: Site navigation
       | Careers            |
       | Insights           |
       | Quarterly Earnings |
+
+  Scenario Outline: Navigate to Services category from Home
+    Given I am on the Home page
+    When I open the "<Category>" service from Home
+    Then the "<Category>" service page title should be displayed
+    And the "Our Related Expertise" section should be displayed
+
+    Examples:
+      | Category       |
+      | Generative AI  |
+      | Responsible AI |
